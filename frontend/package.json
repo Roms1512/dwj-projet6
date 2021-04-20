@@ -32,9 +32,9 @@
     "@angular/cli": "~7.0.2",
     "@angular/compiler-cli": "~7.0.0",
     "@angular/language-service": "~7.0.0",
-    "@types/node": "~8.9.4",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "~8.9.4",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -47,5 +47,17 @@
     "ts-node": "~7.0.0",
     "tslint": "~5.11.0",
     "typescript": "~3.1.1"
-  }
+  },
+  "description": "Le projet a été généré avec [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2.",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roms1512/dwj-projet6.git"
+  },
+  "author": "Lavaur Romain",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Roms1512/dwj-projet6/issues"
+  },
+  "homepage": "https://github.com/Roms1512/dwj-projet6#readme"
 }
