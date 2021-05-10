@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 
 const path = require('path');
+const helmet = require('helmet'); // failles en-tête
 
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -28,6 +29,8 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 

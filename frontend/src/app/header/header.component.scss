@@ -10,6 +10,7 @@ nav {
   padding: 20px;
   justify-content: space-between;
   border-bottom: thin solid black;
+  
 }
 
 h1 {
@@ -27,6 +28,7 @@ h5 {
 .logo {
   display: flex;
   align-items: center;
+  flex-direction: column;
 }
 
 .logo-text {
@@ -35,7 +37,7 @@ h5 {
 
 .logo-image {
   img {
-    height: 4.5em;
+    height: 4.8em;
   }
   margin-right: 1em;
 }

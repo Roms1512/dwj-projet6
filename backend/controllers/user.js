@@ -1,10 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const sanitize = require('mongo-sanitize');
+const mongoMask = require('mongo-mask');
 
 const User = require('../models/User');
 
 exports.signup = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(mongoMask(sanitize(req.body.password)), 10)
     .then((hash) => {
       const user = new User({
         email: req.body.email,
@@ -18,12 +20,12 @@ exports.signup = (req, res, next) => {
 };
 
 exports.login = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  User.findOne({ email: sanitize(req.body.email) })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !'});
       }
-      bcrypt.compare(req.body.password, user.password)
+      bcrypt.compare(sanitize(req.body.password), user.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({ error: 'Mots de passe incorrect !'})
