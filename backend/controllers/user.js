@@ -1,15 +1,16 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); // librairy de hashage
 const jwt = require('jsonwebtoken');
-const sanitize = require('mongo-sanitize');
-const mongoMask = require('mongo-mask');
+const sanitize = require('mongo-sanitize'); // faille XSS, recupère le corp du projet
+const buffer = require('buffer/').Buffer; // chaine binaire 
 
 const User = require('../models/User');
 
-exports.signup = (req, res, next) => {
-  bcrypt.hash(mongoMask(sanitize(req.body.password)), 10)
+exports.signup = (req, res) => {
+  const buf = new Buffer.from(req.body.email);
+  bcrypt.hash(sanitize(req.body.password), 10)
     .then((hash) => {
       const user = new User({
-        email: req.body.email,
+        email: buf.toString('base64'),
         password: hash
       });
       user.save()
@@ -19,13 +20,14 @@ exports.signup = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));
 };
 
-exports.login = (req, res, next) => {
-  User.findOne({ email: sanitize(req.body.email) })
+exports.login = (req, res) => {
+  const buf = new Buffer.from(req.body.email);
+  User.findOne({ email: buf.toString('base64') })
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !'});
       }
-      bcrypt.compare(sanitize(req.body.password), user.password)
+      bcrypt.compare(req.body.password, user.password)
         .then(valid => {
           if (!valid) {
             return res.status(401).json({ error: 'Mots de passe incorrect !'})
@@ -34,7 +36,7 @@ exports.login = (req, res, next) => {
             userId: user._id,
             token: jwt.sign(
               { userId: user._id},
-              'RANDOM_TOKEN_SECRET',
+              'RAnd0M_Tok3N_S3cR3T',
               { expiresIn: '24h'}
             )
           });
