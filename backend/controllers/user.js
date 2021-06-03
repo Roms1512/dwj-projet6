@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt'); // librairy de hashage
 const jwt = require('jsonwebtoken');
 const sanitize = require('mongo-sanitize'); // faille XSS, recupère le corp du projet
-const buffer = require('buffer/').Buffer; // chaine binaire 
+const buffer = require('buffer/').Buffer; // chaine binaire et peut ensuite les remettres sur une base 64bit
+
+require('dotenv').config();
 
 const User = require('../models/User');
 
@@ -10,7 +12,7 @@ exports.signup = (req, res) => {
   bcrypt.hash(sanitize(req.body.password), 10)
     .then((hash) => {
       const user = new User({
-        email: buf.toString('base64'),
+        email: buf.toString(process.env.DB_Buffer), // email masqué base64
         password: hash
       });
       user.save()
@@ -22,7 +24,7 @@ exports.signup = (req, res) => {
 
 exports.login = (req, res) => {
   const buf = new Buffer.from(req.body.email);
-  User.findOne({ email: buf.toString('base64') })
+  User.findOne({ email: buf.toString(process.env.DB_Buffer) }) // email masqué base64
     .then(user => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !'});
@@ -36,8 +38,8 @@ exports.login = (req, res) => {
             userId: user._id,
             token: jwt.sign(
               { userId: user._id},
-              'RAnd0M_Tok3N_S3cR3T',
-              { expiresIn: '24h'}
+              process.env.DB_TokenKey,
+              { expiresIn: process.env.DB_Expire}
             )
           });
         })

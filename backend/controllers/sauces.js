@@ -85,7 +85,7 @@ exports.like = (req, res) => {
           if (sauce.usersLiked.includes(user)) {
             Sauce.updateOne({ _id: sauceId }, {
               $inc: {likes: -1},
-              $pull: {usersLiked: user},
+              $pull: {usersLiked: user}, // retiré un element dans un tableau d'entité
               _id: sauceId
             })
               .then(() => res.status(200).json({ message: 'Like Suprimé !'}))
