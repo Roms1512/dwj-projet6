@@ -10,16 +10,16 @@ const User = require('../models/User');
 
 const password = passwordRegexp({
   min: 8,
-  max: 18,
+  max: 20,
   numeric: true,
   uppercase: true,
-  symbols: false, // an option for symbols: ! @ # $ % ^ &
+  symbols: true, // an option for symbols: ! @ # $ % ^ &
 });
 
 exports.signup = (req, res) => {
   const buf = new Buffer.from(req.body.email);
   const pass = sanitize(req.body.password);
-  if (password.test(pass)) {
+  if (!password.test(pass)) {
     bcrypt.hash(pass, 10)
     .then((hash) => {
       const user = new User({
@@ -32,7 +32,7 @@ exports.signup = (req, res) => {
     })
     .catch(error => res.status(500).json({ error }));
   } else {
-    res.status(401).json({ error: "Le mots de passe doit faire min 8 carractère, doit comprendre au moins 1 carractère majuscule, 1 carractère minuscule, 1 carractère numerique" }) 
+    res.status(401).json({ error: "Le mots de passe doit faire min 8 carractère, doit comprendre au moins 1 carractère majuscule, 1 carractère minuscule, 1 carractère numerique et au moins 1 symbole" }) 
   }
 };
 
@@ -43,7 +43,7 @@ exports.login = (req, res) => {
       if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !'});
       }
-      if (!passwordRegexp){
+      if (!password){
         return res.status(401).json({ error: 'Mots de passe incorect !'});
       }
       bcrypt.compare(req.body.password, user.password)
